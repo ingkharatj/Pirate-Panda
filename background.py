@@ -10,13 +10,16 @@ class PandaGameWindow(arcade.Window):
         self.background  = arcade.Sprite('pic/image2.png')
         self.background.set_position(450,300)
         self.panda = arcade.Sprite('pic/Panda.png')
-        self.panda.set_position(450,300)
+        self.panda.set_position(200,200)
 
 
     def on_draw(self):
         arcade.start_render()
         self.background.draw()
         self.panda.draw()
+
+    def update(self, delta):
+        self.panda.set_position(self.panda.center_x + 3, self.panda.center_y )
 
 
 if __name__ == '__main__':
