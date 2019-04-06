@@ -21,29 +21,31 @@ class ModelSprite(arcade.Sprite):
         super().draw()
 
 
-class DotRunWindow(arcade.Window):
+class Pirate_Panda_Window(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
 
         self.background = arcade.load_texture("pic/image1.png")
         self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-        self.dot_sprite = ModelSprite('pic/Panda.png',
-                                      model=self.world.dot)
+        self.panda_sprite = ModelSprite('pic/Panda.png',
+                                      model=self.world.panda)
 
-        self.normal_coin = arcade.load_texture('pic/skull-model.jpg')
+        self.normal_coin = arcade.load_texture('pic/coin.png')
+
+        self.skull = arcade.load_texture('pic/skull-model.jpg')
 
     def reset(self):
         self.background = arcade.load_texture("pic/image1.png")
         self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-        self.dot_sprite = ModelSprite('pic/Panda.png',
-                                      model=self.world.dot)
+        self.panda_sprite = ModelSprite('pic/Panda.png',
+                                      model=self.world.panda)
 
 
     def update(self, delta):
         self.world.update(delta)
-        if self.world.dot.die():
+        if self.world.panda.die():
             self.world.freeze()
 
     def draw_platforms(self, platforms):
@@ -51,7 +53,7 @@ class DotRunWindow(arcade.Window):
             arcade.draw_rectangle_filled(p.x + p.width // 2,
                                          p.y - p.height // 2,
                                          p.width, p.height,
-                                         arcade.color.DARK_SCARLET)
+                                         arcade.color.WOOD_BROWN)
 
     def draw_coins(self, coins):
         for c in coins:
@@ -60,22 +62,32 @@ class DotRunWindow(arcade.Window):
                     arcade.draw_texture_rectangle(c.x, c.y, c.width, c.height,
                                                   self.normal_coin)
 
+    def draw_skulls(self,skulls):
+        for i in skulls:
+            if not i.is_collected:
+                if i.effect == False:
+                    arcade.draw_texture_rectangle(i.x, i.y, i.width, i.height,
+                                                  self.skull)
+
+
+
     def on_draw(self):
-        arcade.set_viewport(self.world.dot.x - SCREEN_WIDTH // 2,
-                            self.world.dot.x + SCREEN_WIDTH // 2,
+        arcade.set_viewport(self.world.panda.x - SCREEN_WIDTH // 2,
+                            self.world.panda.x + SCREEN_WIDTH // 2,
                             0, SCREEN_HEIGHT)
 
         arcade.start_render()
-        arcade.draw_texture_rectangle(self.dot_sprite.center_x, SCREEN_HEIGHT // 2,
+        arcade.draw_texture_rectangle(self.panda_sprite.center_x, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH + 50, SCREEN_HEIGHT, self.background)
         self.draw_platforms(self.world.platforms)
         self.draw_coins(self.world.coins)
         arcade.draw_text("Space to Start", -100, self.height // 2, arcade.color.GREEN, 30)
-        self.dot_sprite.draw()
+        self.panda_sprite.draw()
         arcade.draw_text(str(self.world.score),
-                         self.world.dot.x + (SCREEN_WIDTH // 2) - 60,
+                         self.world.panda.x + (SCREEN_WIDTH // 2) - 60,
                          self.height - 30,
                          arcade.color.WHITE, 20)
+        self.draw_skulls(self.world.skulls)
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.SPACE:
@@ -87,6 +99,6 @@ class DotRunWindow(arcade.Window):
 
 
 if __name__ == '__main__':
-    window = DotRunWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = Pirate_Panda_Window(SCREEN_WIDTH, SCREEN_HEIGHT)
     arcade.set_window(window)
     arcade.run()

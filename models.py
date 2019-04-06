@@ -7,13 +7,18 @@ MAX_VX = 10
 ACCX = 0.5
 JUMP_VY = 15
 
-DOT_RADIUS = 40
+PANDA_RADIUS = 40
 PLATFORM_MARGIN = 5
 
 COIN_RADIUS = 32
 COIN_Y_OFFSET = 20
 COIN_MARGIN = 12
 COIN_HIT_MARGIN = 12
+
+SKULL_RADIUS = 36
+SKULL_Y_OFFSET = 22
+SKULL_MARGIN = 15
+SKULL_HIT_MARGIN = 15
 
 
 class Model:
@@ -24,7 +29,7 @@ class Model:
         self.angle = 0
 
 
-class Dot(Model):
+class Panda(Model):
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
         self.vx = 0
@@ -78,15 +83,15 @@ class Dot(Model):
                 self.vy = 0
 
     def top_y(self):
-        return self.y + (DOT_RADIUS // 2)
+        return self.y + (PANDA_RADIUS // 2)
 
     def bottom_y(self):
-        return self.y - (DOT_RADIUS // 2)
+        return self.y - (PANDA_RADIUS // 2)
 
     def set_platform(self, platform):
         self.is_jump = False
         self.platform = platform
-        self.y = platform.y + (DOT_RADIUS // 2)
+        self.y = platform.y + (PANDA_RADIUS // 2)
 
     def is_on_platform(self, platform, margin=PLATFORM_MARGIN):
         if not platform.in_top_range(self.x):
@@ -118,6 +123,19 @@ class Dot(Model):
             return True
         return False
 
+class Skull:
+    def __init__(self,x,y,width,height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.is_collected = False
+        if random() > 1.5:
+            self.effect = True
+
+    def skull_hit(self,panda):
+        return ((abs(self.x - panda.x) < SKULL_HIT_MARGIN) and
+                (abs(self.y - panda.y) < SKULL_HIT_MARGIN))
 
 class Coin:
     def __init__(self, x, y, width, height):
@@ -130,9 +148,10 @@ class Coin:
         if random() > 0.975:
             self.effect = True
 
-    def hit(self, dot):
-        return ((abs(self.x - dot.x) < COIN_HIT_MARGIN) and
-                (abs(self.y - dot.y) < COIN_HIT_MARGIN))
+    def coin_hit(self, panda):
+        return ((abs(self.x - panda.x) < COIN_HIT_MARGIN) and
+                (abs(self.y - panda.y) < COIN_HIT_MARGIN))
+
 
 
 class Platform:
@@ -157,6 +176,15 @@ class Platform:
             x += COIN_MARGIN + COIN_RADIUS
         return coins
 
+    def spawn_skull(self):
+        skulls = []
+        x = self.x + SKULL_MARGIN
+        while x + SKULL_MARGIN <= self.right_most_x():
+            skulls.append(Coin(x, self.y + SKULL_Y_OFFSET, SKULL_RADIUS, SKULL_RADIUS))
+            x += SKULL_MARGIN + SKULL_RADIUS
+        return skulls
+
+
 
 class World:
     STATE_FROZEN = 1
@@ -166,10 +194,10 @@ class World:
         self.width = width
         self.height = height
 
-        self.dot = Dot(self, 0, 120)
+        self.panda = Panda(self, 0, 120)
         self.init_platforms()
 
-        self.dot.set_platform(self.platforms[0])
+        self.panda.set_platform(self.platforms[0])
 
         self.score = 0
 
@@ -191,20 +219,24 @@ class World:
             Platform(self, 1100, 100, 500, 50),
         ]
         self.coins = []
+
         for p in self.platforms:
             self.coins += p.spawn_coins()
+        self.skulls = []
+        for i in self.platforms:
+            self.skulls += i.spawn_skull()
 
     def update(self, delta):
         if self.state == World.STATE_FROZEN:
             return
-        self.dot.update(delta)
+        self.panda.update(delta)
         self.recycle_platform()
         self.collect_coins()
         self.remove_old_coins()
 
     def collect_coins(self):
         for c in self.coins:
-            if (not c.is_collected) and (c.hit(self.dot)):
+            if (not c.is_collected) and (c.coin_hit(self.panda)):
                 c.is_collected = True
                 if c.effect == False:
                     self.score += 1
@@ -212,13 +244,14 @@ class World:
                     self.score += 10
 
     def too_far_left_x(self):
-        return self.dot.x - self.width
+        return self.panda.x - self.width
 
     def remove_old_coins(self):
         far_x = self.too_far_left_x()
         if self.coins[0].x >= far_x:
             return
         self.coins = [c for c in self.coins if c.x >= far_x]
+
 
     def recycle_platform(self):
         far_x = self.too_far_left_x()
@@ -231,4 +264,5 @@ class World:
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.SPACE:
-            self.dot.jump()
+            self.panda.jump()
+
