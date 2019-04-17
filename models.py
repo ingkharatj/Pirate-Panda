@@ -217,16 +217,16 @@ class World:
 
     def init_platforms(self):
         self.platforms = [
-            Platform(self, 0, 100, 500, 40),
-            Platform(self, 550, 150, 500, 10),
-            Platform(self, 1100, 100, 500, 20),
-            Platform(self, 2000, 200, 300, 15),
-            Platform(self, 1600, 175, 400, 30),
-            Platform(self, 2500, 250, 350, 25),
-            Platform(self, 3050, 100, 200, 35),
-            Platform(self, 3330, 120, 420, 20 ),
-            Platform(self, 3620, 200, 500, 15 ),
-            Platform(self, 4050, 150, 300, 20)
+            Platform(self, 0, 100, 500, 60),
+            Platform(self, 600, 150, 500, 30),
+            Platform(self, 1200, 200, 500, 40),
+            Platform(self, 1800, 150, 300, 35),
+            Platform(self, 2200, 100, 400, 50),
+            Platform(self, 2500, 150, 350, 45),
+            Platform(self, 2950, 200, 200, 55),
+            Platform(self, 3200, 150, 420, 40 ),
+            Platform(self, 3850, 100, 500, 35 ),
+            Platform(self, 4200, 150, 300, 40)
 
         ]
         self.coins = []
