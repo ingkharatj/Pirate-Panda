@@ -220,12 +220,14 @@ class World:
             Platform(self, 0, 100, 500, 40),
             Platform(self, 550, 150, 500, 10),
             Platform(self, 1100, 100, 500, 20),
-            Platform(self, 2000, 300, 300, 15),
-            Platform(self, 1600, 200, 400, 30),
+            Platform(self, 2000, 200, 300, 15),
+            Platform(self, 1600, 175, 400, 30),
             Platform(self, 2500, 250, 350, 25),
             Platform(self, 3050, 100, 200, 35),
             Platform(self, 3330, 120, 420, 20 ),
-            Platform(self, 3620, 200, 500, 15 )
+            Platform(self, 3620, 200, 500, 15 ),
+            Platform(self, 4050, 150, 300, 20)
+
         ]
         self.coins = []
 

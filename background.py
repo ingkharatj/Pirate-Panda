@@ -34,6 +34,7 @@ class Pirate_Panda_Window(arcade.Window):
         self.normal_coin = arcade.load_texture('pic/coin.png')
 
         self.skull = arcade.load_texture('pic/skull-model.jpg')
+        self.walk = arcade.load_texture('pic/sandHalf.png')
 
     def reset(self):
         self.background = arcade.load_texture("pic/image1.png")
@@ -50,10 +51,21 @@ class Pirate_Panda_Window(arcade.Window):
 
     def draw_platforms(self, platforms):
         for p in platforms:
-            arcade.draw_rectangle_filled(p.x + p.width // 2,
+            # arcade.draw_rectangle_filled(p.x + p.width // 2,
+            #                              p.y - p.height // 2,
+            #                              p.width, p.height,
+            #                              arcade.color.WOOD_BROWN)
+            arcade.draw_texture_rectangle(p.x + p.width // 2,
                                          p.y - p.height // 2,
                                          p.width, p.height,
-                                         arcade.color.WOOD_BROWN)
+                                          self.walk)
+
+            # arcade.draw_rectangle_outline(p.x + p.width // 2,
+            #                              p.y - p.height // 2,
+            #                              p.width, p.height,
+            #                              arcade.load_texture('pic/sandHalf.png'))
+
+
 
     def draw_coins(self, coins):
         for c in coins:
