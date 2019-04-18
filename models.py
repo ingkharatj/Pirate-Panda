@@ -244,15 +244,18 @@ class World:
         self.recycle_platform()
         self.collect_coins()
         self.remove_old_coins()
+        self.score_plus()
+
+
+    def score_plus(self):
+        self.score += 1
 
     def collect_coins(self):
         for c in self.coins:
             if (not c.is_collected) and (c.coin_hit(self.panda)):
                 c.is_collected = True
                 if c.effect == False:
-                    self.score += 1
-                else:
-                    self.score += 10
+                    self.score += 100
 
     def too_far_left_x(self):
         return self.panda.x - self.width

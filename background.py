@@ -51,19 +51,11 @@ class Pirate_Panda_Window(arcade.Window):
 
     def draw_platforms(self, platforms):
         for p in platforms:
-            # arcade.draw_rectangle_filled(p.x + p.width // 2,
-            #                              p.y - p.height // 2,
-            #                              p.width, p.height,
-            #                              arcade.color.WOOD_BROWN)
+
             arcade.draw_texture_rectangle(p.x + p.width // 2,
                                          p.y - p.height // 2,
                                          p.width, p.height,
                                           self.walk)
-
-            # arcade.draw_rectangle_outline(p.x + p.width // 2,
-            #                              p.y - p.height // 2,
-            #                              p.width, p.height,
-            #                              arcade.load_texture('pic/sandHalf.png'))
 
 
 
