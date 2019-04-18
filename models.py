@@ -7,13 +7,13 @@ MAX_VX = 10
 ACCX = 0.5
 JUMP_VY = 15
 
-PANDA_RADIUS = 40
-PLATFORM_MARGIN = 5
+PANDA_RADIUS = 50
+PLATFORM_MARGIN = 15
 
-COIN_RADIUS = 32
+COIN_RADIUS = 35
 COIN_Y_OFFSET = 20
 COIN_MARGIN = 12
-COIN_HIT_MARGIN = 12
+COIN_HIT_MARGIN = 23
 
 SKULL_RADIUS = 36
 SKULL_Y_OFFSET = 22
@@ -174,9 +174,14 @@ class Platform:
     def spawn_coins(self):
         coins = []
         x = self.x + COIN_MARGIN
+
         while x + COIN_MARGIN <= self.right_most_x():
-            coins.append(Coin(x, self.y + COIN_Y_OFFSET, COIN_RADIUS, COIN_RADIUS))
-            x += COIN_MARGIN + COIN_RADIUS
+            coins.append(Coin(x+300 , self.y + COIN_Y_OFFSET +15 , COIN_RADIUS+20 , COIN_RADIUS+20))
+            x += COIN_MARGIN + COIN_RADIUS + 200
+
+            # coins.append(Coin(x, self.y + COIN_Y_OFFSET + 60, COIN_RADIUS + 20, COIN_RADIUS + 20))
+            # x += COIN_MARGIN + COIN_RADIUS + 1234
+
         return coins
 
     def spawn_skull(self):
@@ -232,10 +237,13 @@ class World:
         self.coins = []
 
         for p in self.platforms:
+
             self.coins += p.spawn_coins()
+
+
         self.skulls = []
-        for i in self.platforms:
-            self.skulls += i.spawn_skull()
+        # for i in self.platforms:
+        #     self.skulls += i.spawn_skull()
 
     def update(self, delta):
         if self.state == World.STATE_FROZEN:

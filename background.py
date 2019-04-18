@@ -85,12 +85,12 @@ class Pirate_Panda_Window(arcade.Window):
                                       SCREEN_WIDTH + 50, SCREEN_HEIGHT, self.background)
         self.draw_platforms(self.world.platforms)
         self.draw_coins(self.world.coins)
-        arcade.draw_text("Space to Start", -100, self.height // 2, arcade.color.GREEN, 30)
+        arcade.draw_text("Space to Start", -100, self.height // 2, arcade.color.RED, 30)
         self.panda_sprite.draw()
         arcade.draw_text(str(self.world.score),
-                         self.world.panda.x + (SCREEN_WIDTH // 2) - 60,
+                         self.world.panda.x + (SCREEN_WIDTH // 2) - 890,
                          self.height - 30,
-                         arcade.color.WHITE, 20)
+                         arcade.color.BLACK, 20)
         self.draw_skulls(self.world.skulls)
 
     def on_key_press(self, key, key_modifiers):
