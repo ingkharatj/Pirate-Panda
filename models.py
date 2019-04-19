@@ -132,6 +132,8 @@ class Skull:
         self.is_collected = False
         if random() > 1.5:
             self.effect = True
+        else:
+            self.effect = False
 
     def skull_hit(self,panda):
         panda.die()
@@ -172,24 +174,30 @@ class Platform:
         return self.x + self.width
 
     def spawn_coins(self):
+        p = randint(20,500)
         coins = []
         x = self.x + COIN_MARGIN
 
         while x + COIN_MARGIN <= self.right_most_x():
-            coins.append(Coin(x+300 , self.y + COIN_Y_OFFSET +15 , COIN_RADIUS+20 , COIN_RADIUS+20))
+            coins.append(Coin(self.x+p, self.y + COIN_Y_OFFSET +15 , COIN_RADIUS+20 , COIN_RADIUS+20))
             x += COIN_MARGIN + COIN_RADIUS + 200
 
-            # coins.append(Coin(x, self.y + COIN_Y_OFFSET + 60, COIN_RADIUS + 20, COIN_RADIUS + 20))
-            # x += COIN_MARGIN + COIN_RADIUS + 1234
+
 
         return coins
 
     def spawn_skull(self):
+
+        # p = randint(self.x,self.x + self.width)
+        p = randint(self.x,self.x)
         skulls = []
+
         x = self.x + SKULL_MARGIN
+
         while x + SKULL_MARGIN <= self.right_most_x():
-            skulls.append(Coin(x, self.y + SKULL_Y_OFFSET, SKULL_RADIUS, SKULL_RADIUS))
+            skulls.append(Skull(p, self.y + SKULL_Y_OFFSET, SKULL_RADIUS + 20, SKULL_RADIUS + 20))
             x += SKULL_MARGIN + SKULL_RADIUS
+
         return skulls
 
 
@@ -222,16 +230,16 @@ class World:
 
     def init_platforms(self):
         self.platforms = [
-            Platform(self, 0, 100, 500, 60),
-            Platform(self, 600, 150, 500, 30),
-            Platform(self, 1200, 200, 500, 40),
-            Platform(self, 1800, 150, 300, 35),
-            Platform(self, 2200, 100, 400, 50),
-            Platform(self, 2500, 150, 350, 45),
-            Platform(self, 2950, 200, 200, 55),
-            Platform(self, 3200, 150, 420, 40 ),
-            Platform(self, 3850, 100, 500, 35 ),
-            Platform(self, 4200, 150, 300, 40)
+            Platform(self, 0, 100, 500, 70),
+            Platform(self, 600, 150, 500, 40),
+            Platform(self, 1200, 200, 500, 50),
+            Platform(self, 1800, 150, 300, 45),
+            Platform(self, 2200, 100, 400, 60),
+            Platform(self, 2500, 150, 350, 55),
+            Platform(self, 2950, 200, 200, 65),
+            Platform(self, 3200, 150, 420, 50 ),
+            Platform(self, 3850, 100, 500, 45 ),
+            Platform(self, 4200, 150, 300, 50)
 
         ]
         self.coins = []
@@ -242,8 +250,8 @@ class World:
 
 
         self.skulls = []
-        # for i in self.platforms:
-        #     self.skulls += i.spawn_skull()
+        for i in self.platforms:
+            self.skulls += i.spawn_skull()
 
     def update(self, delta):
         if self.state == World.STATE_FROZEN:
@@ -263,7 +271,7 @@ class World:
             if (not c.is_collected) and (c.coin_hit(self.panda)):
                 c.is_collected = True
                 if c.effect == False:
-                    self.score += 100
+                    self.score += 1000
 
     def too_far_left_x(self):
         return self.panda.x - self.width

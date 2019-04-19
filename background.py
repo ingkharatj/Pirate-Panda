@@ -31,7 +31,7 @@ class Pirate_Panda_Window(arcade.Window):
         self.panda_sprite = ModelSprite('pic/Panda.png',
                                       model=self.world.panda)
 
-        self.normal_coin = arcade.load_texture('pic/coin.png')
+        self.coin = arcade.load_texture('pic/coin.png')
 
         self.skull = arcade.load_texture('pic/skull-model.jpg')
         self.walk = arcade.load_texture('pic/sandHalf.png')
@@ -64,7 +64,7 @@ class Pirate_Panda_Window(arcade.Window):
             if not c.is_collected:
                 if c.effect == False:
                     arcade.draw_texture_rectangle(c.x, c.y, c.width, c.height,
-                                                  self.normal_coin)
+                                                  self.coin)
 
     def draw_skulls(self,skulls):
         for i in skulls:
