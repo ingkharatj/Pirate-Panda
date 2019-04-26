@@ -71,7 +71,7 @@ class Pirate_Panda_Window(arcade.Window):
             if not i.is_collected:
                 if i.effect == False:
                     arcade.draw_texture_rectangle(i.x, i.y, i.width, i.height,
-                                                  self.skull)
+                                              self.skull)
 
 
 

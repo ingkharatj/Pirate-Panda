@@ -118,8 +118,8 @@ class Panda(Model):
                 return p
         return None
 
-    def die(self):
-        if self.top_y() < 0:
+    def die(self, skull_hit=False):
+        if self.top_y() < 0 or skull_hit:
             return True
         return False
 
@@ -129,14 +129,10 @@ class Skull:
         self.y = y
         self.width = width
         self.height = height
+        self.effect = False
         self.is_collected = False
-        if random() > 1.5:
-            self.effect = True
-        else:
-            self.effect = False
 
     def skull_hit(self,panda):
-        panda.die()
         return ((abs(self.x - panda.x) < SKULL_HIT_MARGIN) and
                 (abs(self.y - panda.y) < SKULL_HIT_MARGIN))
 
@@ -189,7 +185,8 @@ class Platform:
     def spawn_skull(self):
 
         # p = randint(self.x,self.x + self.width)
-        p = randint(self.x,self.x)
+        p = randint(0,self.width) + self.x
+
         skulls = []
 
         x = self.x + SKULL_MARGIN
@@ -251,7 +248,10 @@ class World:
 
         self.skulls = []
         for i in self.platforms:
-            self.skulls += i.spawn_skull()
+            a = randint(1,10)
+            if a < 4 :
+
+                self.skulls += i.spawn_skull()
 
     def update(self, delta):
         if self.state == World.STATE_FROZEN:
@@ -259,6 +259,7 @@ class World:
         self.panda.update(delta)
         self.recycle_platform()
         self.collect_coins()
+        self.collect_skulls()
         self.remove_old_coins()
         self.score_plus()
 
@@ -272,6 +273,13 @@ class World:
                 c.is_collected = True
                 if c.effect == False:
                     self.score += 1000
+
+    def collect_skulls(self):
+        for i in self.skulls:
+            if (not i.is_collected) and (i.skull_hit(self.panda)):
+                print('skull hit')
+                i.is_collected = True
+                self.panda.die(True)
 
     def too_far_left_x(self):
         return self.panda.x - self.width
@@ -291,6 +299,11 @@ class World:
                 p.x = last_x + randint(50, 200)
                 p.y = randint(100, 200)
                 self.coins += p.spawn_coins()
+                a = randint(1, 10)
+                if a < 4:
+                    self.skulls += p.spawn_skull()
+
+
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.SPACE:
