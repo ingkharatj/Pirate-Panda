@@ -119,7 +119,9 @@ class Panda(Model):
         return None
 
     def die(self, skull_hit=False):
-        if self.top_y() < 0 or skull_hit:
+        if self.top_y() < 0 :
+            return True
+        if skull_hit == True:
             return True
         return False
 
@@ -184,7 +186,6 @@ class Platform:
 
     def spawn_skull(self):
 
-        # p = randint(self.x,self.x + self.width)
         p = randint(0,self.width) + self.x
 
         skulls = []
@@ -234,9 +235,10 @@ class World:
             Platform(self, 2200, 100, 400, 60),
             Platform(self, 2500, 150, 350, 55),
             Platform(self, 2950, 200, 200, 65),
-            Platform(self, 3200, 150, 420, 50 ),
-            Platform(self, 3850, 100, 500, 45 ),
+            Platform(self, 3200, 150, 420, 50),
+            Platform(self, 3850, 100, 500, 45),
             Platform(self, 4200, 150, 300, 50)
+
 
         ]
         self.coins = []
@@ -277,9 +279,9 @@ class World:
     def collect_skulls(self):
         for i in self.skulls:
             if (not i.is_collected) and (i.skull_hit(self.panda)):
-                print('skull hit')
                 i.is_collected = True
-                self.panda.die(True)
+                if i.effect == False:
+                    self.freeze()
 
     def too_far_left_x(self):
         return self.panda.x - self.width
@@ -308,4 +310,5 @@ class World:
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.SPACE:
             self.panda.jump()
+
 
