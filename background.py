@@ -24,7 +24,6 @@ class ModelSprite(arcade.Sprite):
 class Pirate_Panda_Window(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
-        self.jump_sound = arcade.sound.load_sound("pic/jump.mp3")
 
         self.background = arcade.load_texture("pic/image1.png")
         self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -100,6 +99,7 @@ class Pirate_Panda_Window(arcade.Window):
             if not self.world.is_started():
                 self.world.start()
             self.world.on_key_press(key, key_modifiers)
+
         if key == arcade.key.R:
 
             self.reset()

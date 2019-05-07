@@ -1,6 +1,8 @@
 import arcade.key
 from random import randint, random
 import time
+import pyglet.gl as gl
+
 
 GRAVITY = -1
 MAX_VX = 10
@@ -29,6 +31,7 @@ class Model:
         self.angle = 0
 
 
+
 class Panda(Model):
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
@@ -38,6 +41,8 @@ class Panda(Model):
         self.platform = None
         self.super = False
         self.timer = 0
+        self.jump_sound = arcade.sound.load_sound("pic/jump.mp3")
+
 
     def start_super(self):
         self.super = True
@@ -273,6 +278,7 @@ class World:
         for c in self.coins:
             if (not c.is_collected) and (c.coin_hit(self.panda)):
                 c.is_collected = True
+                arcade.sound.play_sound("pic/coin.mp3")
                 if c.effect == False:
                     self.score += 1000
 
@@ -310,5 +316,10 @@ class World:
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.SPACE:
             self.panda.jump()
+            arcade.sound.play_sound("pic/jump.mp3")
+
+
+
+
 
 
