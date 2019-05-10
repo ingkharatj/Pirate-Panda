@@ -1,6 +1,8 @@
 import arcade.key
 from random import randint, random
 import time
+import os
+
 import pyglet.gl as gl
 
 
@@ -17,10 +19,10 @@ COIN_Y_OFFSET = 20
 COIN_MARGIN = 12
 COIN_HIT_MARGIN = 23
 
-SKULL_RADIUS = 36
-SKULL_Y_OFFSET = 22
-SKULL_MARGIN = 15
-SKULL_HIT_MARGIN = 15
+SKULL_RADIUS = 40
+SKULL_Y_OFFSET = 25
+SKULL_MARGIN = 20
+SKULL_HIT_MARGIN = 30
 
 
 class Model:
@@ -30,7 +32,11 @@ class Model:
         self.y = y
         self.angle = 0
 
-
+    # def check_dead(self):
+    #     if self.health <= 0:
+    #         self.is_dead = True
+    #     else:
+    #         self.is_dead = False
 
 class Panda(Model):
     def __init__(self, world, x, y):
@@ -40,9 +46,8 @@ class Panda(Model):
         self.is_jump = False
         self.platform = None
         self.super = False
+        self.is_dead = False
         self.timer = 0
-        self.jump_sound = arcade.sound.load_sound("pic/jump.mp3")
-
 
     def start_super(self):
         self.super = True
@@ -68,6 +73,8 @@ class Panda(Model):
             self.vy = JUMP_VY
 
     def update(self, delta):
+        # self.check_dead()
+
         if self.vx < MAX_VX:
             self.vx += ACCX
 
@@ -143,8 +150,6 @@ class Skull:
         return ((abs(self.x - panda.x) < SKULL_HIT_MARGIN) and
                 (abs(self.y - panda.y) < SKULL_HIT_MARGIN))
 
-
-
 class Coin:
     def __init__(self, x, y, width, height):
         self.x = x
@@ -159,7 +164,6 @@ class Coin:
     def coin_hit(self, panda):
         return ((abs(self.x - panda.x) < COIN_HIT_MARGIN) and
                 (abs(self.y - panda.y) < COIN_HIT_MARGIN))
-
 
 
 class Platform:
@@ -185,16 +189,11 @@ class Platform:
             coins.append(Coin(self.x+p, self.y + COIN_Y_OFFSET +15 , COIN_RADIUS+20 , COIN_RADIUS+20))
             x += COIN_MARGIN + COIN_RADIUS + 200
 
-
-
         return coins
 
     def spawn_skull(self):
-
         p = randint(0,self.width) + self.x
-
         skulls = []
-
         x = self.x + SKULL_MARGIN
 
         while x + SKULL_MARGIN <= self.right_most_x():
@@ -204,7 +203,6 @@ class Platform:
         return skulls
 
 
-
 class World:
     STATE_FROZEN = 1
     STATE_STARTED = 2
@@ -212,21 +210,26 @@ class World:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-
         self.panda = Panda(self, 0, 120)
         self.init_platforms()
-
         self.panda.set_platform(self.platforms[0])
-
         self.score = 0
-
         self.state = World.STATE_FROZEN
+
+    def setup(self):
+        self.panda.is_dead = False
+
 
     def start(self):
         self.state = World.STATE_STARTED
 
     def freeze(self):
+        arcade.sound.play_sound("pic/die1.mp3")
+        # self.panda_sprite = ModelSprite('pic/Panda_Die.png',
+        #                                 model=self.world.panda)
+        self.panda.die()
         self.state = World.STATE_FROZEN
+
 
     def is_started(self):
         return self.state == World.STATE_STARTED
@@ -244,20 +247,15 @@ class World:
             Platform(self, 3850, 100, 500, 45),
             Platform(self, 4200, 150, 300, 50)
 
-
         ]
         self.coins = []
-
         for p in self.platforms:
-
             self.coins += p.spawn_coins()
-
 
         self.skulls = []
         for i in self.platforms:
             a = randint(1,10)
             if a < 4 :
-
                 self.skulls += i.spawn_skull()
 
     def update(self, delta):
@@ -269,7 +267,6 @@ class World:
         self.collect_skulls()
         self.remove_old_coins()
         self.score_plus()
-
 
     def score_plus(self):
         self.score += 1
@@ -288,6 +285,8 @@ class World:
                 i.is_collected = True
                 if i.effect == False:
                     self.freeze()
+
+
 
     def too_far_left_x(self):
         return self.panda.x - self.width
@@ -310,8 +309,6 @@ class World:
                 a = randint(1, 10)
                 if a < 4:
                     self.skulls += p.spawn_skull()
-
-
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.SPACE:
